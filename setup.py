@@ -10,7 +10,7 @@ setup(
     author_email='jason@godden.id.au',
     maintainer='Jason Godden',
     maintainer_email='jason@godden.id.au',
-    license='GPL',
+    license='Apache',
     zip_safe=False,
     package_dir={
         'ebi':'ebi',
