@@ -5,7 +5,7 @@ import copy
 import salt.config
 
 DEFAULT_EBI_CONFIG = {
-    'root': os.getcwd(),
+    'root': '{0}/ebi'.format(os.getcwd()),
     'list': False,
     'grains': False,
     'pillar': False
