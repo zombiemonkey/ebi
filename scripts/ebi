@@ -1,0 +1,23 @@
+#!/usr/bin/env python
+
+DEBUG = True
+
+import sys
+
+try:
+    sys.dont_write_bytecode = True
+except:
+    pass
+
+if DEBUG:
+    import os
+    import inspect
+    
+    script_file = inspect.getfile(inspect.currentframe())
+    script_dir = os.path.dirname(os.path.abspath(script_file))
+    sys.path.append(os.path.dirname(script_dir))
+
+from ebi.scripts import ebi_cli
+
+if __name__ == '__main__':
+    ebi_cli()
