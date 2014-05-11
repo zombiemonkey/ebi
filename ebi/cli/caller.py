@@ -144,9 +144,10 @@ class EbiCaller(salt.cli.caller.Caller):
                     {'local': ret.get('return', {})},
                     ret.get('out', 'nested'),
                     self.opts)
-            for k, v in ret['return'].iteritems():
-                if isinstance(v, dict) and not v.get('result', True):
-                    sys.exit(1)
+            if isinstance(ret['return'], dict):
+                for k, v in ret['return'].iteritems():
+                    if isinstance(v, dict) and not v.get('result', True):
+                        sys.exit(1)
             if self.opts.get('retcode_passthrough', False):
                 sys.exit(ret['retcode'])
         except SaltInvocationError as err:
