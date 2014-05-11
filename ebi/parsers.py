@@ -7,7 +7,7 @@ import ebi.version
 
 class EbiCLIOptionParser(optparse.OptionParser):
     VERSION = ebi.version.__version__
-    usage = '%prog'
+    usage = "%prog [options] (-t task pillar='JSON'|module.fun args)"
 
     def __init__(self, *args, **kwargs):
         self.config = ebi.config.ebi_config()

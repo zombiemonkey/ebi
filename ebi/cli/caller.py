@@ -27,54 +27,41 @@ class EbiCaller(salt.cli.caller.Caller):
         minion_opts = ebi.config.ebi_minion_config()
         minion_opts.update({
             'id': 'local',
-            'conf_file': os.path.abspath('{0}/minion'.format(self.env)),
+            'conf_file': '{0}/minion'.format(self.env),
             'file_client': 'local',
             'fileserver_backend': ['roots'],
-            'log_level': 'warning',
+            'log_level': 'info',
             'log_level_logfile': 'warning',
-            'log_file': os.path.abspath('{0}/log'.format(self.env)),
-            'cachedir': os.path.abspath('{0}/cache'.format(self.env)),
-            'returner_dirs': [
-                os.path.abspath('{0}/ebi/returners'.format(self.root))
-            ],
-            'module_dirs': [
-                os.path.abspath('{0}/ebi/modules'.format(self.root))
-            ],
-            'states_dir': [
-                os.path.abspath('{0}/ebi/states'.format(self.root))
-            ],
-            'grains_dir': [
-                os.path.abspath('{0}/ebi/grains'.format(self.root))
-            ],
+            'log_file': '{0}/log'.format(self.env),
+            'cachedir': '{0}/cache'.format(self.env),
             'file_roots': {
                 'base': [
-                    os.path.abspath('{0}/state'.format(self.env)),
-                    os.path.abspath('{0}/tasks'.format(self.root))
+                    os.path.abspath('{0}/tasks'.format(self.root)),
+                    os.path.abspath('{0}/plugins'.format(self.root))
                 ]
             },
             'pillar_roots': {
                 'base': [
-                    os.path.abspath('{0}/pillar'.format(self.env)),
-                    os.path.abspath('{0}/config_pillar'.format(self.root))
+                    '{0}/pillar'.format(self.env),
+                    os.path.abspath('{0}/pillar'.format(self.root))
                 ]
             },
             'extension_modules': '',
             'retcode_passthrough': True
         })
         
-        if os.path.isdir('{0}/config_grains'.format(self.root)):
+        if os.path.isdir('{0}/grains'.format(self.root)):
             minion_opts['grains'] = self._load_static_data(
-                '{0}/config_grains'.format(self.root))
+                '{0}/grains'.format(self.root))
         
-        if os.path.isdir('{0}/config_pillar'.format(self.root)):
+        if os.path.isdir('{0}/pillar'.format(self.root)):
             if not os.path.exists('{0}/pillar'.format(self.env)):
                 os.mkdir('{0}/pillar'.format(self.env))
             pillar_top = {
                 'base': {
                     '*': self._sls_library(
-                            '{0}/config_pillar'.format(self.root),
-                            self._sls_walk(
-                                '{0}/config_pillar'.format(self.root)))
+                            '{0}/pillar'.format(self.root),
+                            self._sls_walk('{0}/pillar'.format(self.root)))
                 }
             }
             yaml.safe_dump(
@@ -158,7 +145,7 @@ class EbiCaller(salt.cli.caller.Caller):
                     ret.get('out', 'nested'),
                     self.opts)
             for k, v in ret['return'].iteritems():
-                if not v.get('result', True):
+                if isinstance(v, dict) and not v.get('result', True):
                     sys.exit(1)
             if self.opts.get('retcode_passthrough', False):
                 sys.exit(ret['retcode'])
